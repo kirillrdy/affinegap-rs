@@ -17,16 +17,13 @@ fn min(a: f64, b: f64) -> f64 {
     }
 }
 
-fn affine_gap_distance(string_a: String, string_b: String) -> f64 {
+fn affine_gap_distance(mut string1: String,mut string2: String) -> f64 {
 
 	let matchWeight = 1 as f64;
 	let mismatchWeight = 11 as f64;
 	let gapWeight = 10 as f64;
 	let spaceWeight = 7 as f64;
 	let abbreviation_scale = 0.125;
-
-	let mut string1 = string_b;
-	let mut string2 = string_a;
 
 	let mut length1 = string1.len();
 	let mut length2 = string2.len();
