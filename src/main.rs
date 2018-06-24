@@ -1,5 +1,8 @@
 
 fn main() {
+
+    let distance = normalised_affine_gap_distance("radzikhovskyy".to_string(), "jonathan".to_string());
+    println!("{}", distance);
     for _ in 0..10000000 {
         normalised_affine_gap_distance("radzikhovskyy".to_string(), "jonathan".to_string());
     }
