@@ -56,7 +56,9 @@ fn affine_gap_distance(string_a: String, string_b: String) -> f64 {
 	for i in 1..(length2 + 1) {
 		let char2 = string2.get(i-1..i).unwrap();
 
-        let V_previous = V_current.clone(); // TODO there might be issues here
+        for i in 0..length1 + 1 {
+            V_previous[i] = V_current[i]
+        }
 
 		V_current[0] = (gapWeight + (spaceWeight*i as f64)) as f64;
 		let mut I = std::i32::MAX as f64;
