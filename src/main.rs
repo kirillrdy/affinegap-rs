@@ -1,15 +1,25 @@
-use std::cmd::min;
 
 fn main() {
-    println!("Hello, world!");
+    for i in 0..10000000 {
+        NormalisedAffineGapDistance("radzikhovskyy".to_string(), "jonathan".to_string());
+    }
+}
+
+
+fn min(a: f64, b: f64) -> f64 {
+    if a < b {
+        a
+    } else {
+        b
+    }
 }
 
 fn AffineGapDistance(string_a: String, string_b: String) -> f64 {
 
-	let matchWeight = 1;
-	let mismatchWeight = 11;
-	let gapWeight = 10;
-	let spaceWeight = 7;
+	let matchWeight = 1 as f64;
+	let mismatchWeight = 11 as f64;
+	let gapWeight = 10 as f64;
+	let spaceWeight = 7 as f64;
 	let abbreviation_scale = 0.125;
 
 	let mut string1 = string_b;
@@ -32,46 +42,45 @@ fn AffineGapDistance(string_a: String, string_b: String) -> f64 {
         length1 = tmp;
 	};
 
-	let D: [f64, length1 + 1] = [0; length1 + 1];
-	V_current := make([]float64, length1+1)
-	V_previous := make([]float64, length1+1)
+	let mut D = vec![0.0; length1 + 1];
+	let mut V_current = vec![0.0; length1 + 1];
+	let mut V_previous = vec![0.0; length1 + 1];
 
-	var distance float64
+	let mut distance = 0.0;
 
-	for j := 1; j < (length1 + 1); j++ {
-		V_current[j] = gapWeight + float64(spaceWeight*j)
-		D[j] = math.MaxInt32 //TODO maybe not 32
-	}
+	for j in 1..(length1 + 1) {
+		V_current[j] = gapWeight + spaceWeight*j as f64;
+		D[j] = std::i32::MAX as f64;
+	};
 
-	for i := 1; i < (length2 + 1); i++ {
-		char2 := string2[i-1]
+	for i in 1..(length2 + 1) {
+		let char2 = string2.get(i-1..i).unwrap();
 
-		//for _ in range(0, length1 + 1) :
-		copy(V_previous, V_current)
+        let V_previous = V_current.clone(); // TODO there might be issues here
 
-		V_current[0] = gapWeight + float64(spaceWeight*i)
-		I := float64(math.MaxInt32)
+		V_current[0] = (gapWeight + (spaceWeight*i as f64)) as f64;
+		let mut I = std::i32::MAX as f64;
 
-		for j := 1; j < (length1 + 1); j++ {
-			char1 := string1[j-1]
+		for j in 1..(length1 + 1) {
+			let char1 = string1.get(j-1..j).unwrap();
 
 			if j <= length2 {
-				I = math.Min(I, V_current[j-1]+gapWeight) + spaceWeight
+				I = min(I, V_current[j-1]+gapWeight) + spaceWeight;
 			} else {
-				I = (math.Min(I, V_current[j-1]+gapWeight*abbreviation_scale) + spaceWeight*abbreviation_scale)
-			}
-			D[j] = math.Min(D[j], V_previous[j]+gapWeight) + spaceWeight
+				I = min(I, V_current[j-1]+gapWeight *abbreviation_scale) + spaceWeight * abbreviation_scale;
+			};
+			D[j] = min(D[j], V_previous[j]+gapWeight) + spaceWeight;
 
-			var M float64
+			let mut M: f64;
 			if char2 == char1 {
-				M = V_previous[j-1] + matchWeight
+				M = V_previous[j-1] + matchWeight;
 			} else {
-				M = V_previous[j-1] + mismatchWeight
-			}
+				M = V_previous[j-1] + mismatchWeight;
+			};
 
-			V_current[j] = math.Min(math.Min(I, D[j]), M)
-		}
-	}
+			V_current[j] = min(min(I, D[j]), M)
+		};
+	};
 	distance = V_current[length1];
 
 	distance
