@@ -1,10 +1,10 @@
 
 fn main() {
 
-    let distance = normalised_affine_gap_distance("radzikhovskyy".to_string(), "jonathan".to_string());
+    let distance = normalised_affine_gap_distance("radzikhovskyy", "jonathan");
     println!("{}", distance);
     for _ in 0..10000000 {
-        normalised_affine_gap_distance("radzikhovskyy".to_string(), "jonathan".to_string());
+        normalised_affine_gap_distance("radzikhovskyy", "jonathan");
     }
 }
 
@@ -17,7 +17,7 @@ fn min(a: f64, b: f64) -> f64 {
     }
 }
 
-fn affine_gap_distance(mut string1: String,mut string2: String) -> f64 {
+fn affine_gap_distance<'a>(mut string1: &'a str, mut string2: &'a str) -> f64 {
 
 	let matchWeight = 1 as f64;
 	let mismatchWeight = 11 as f64;
@@ -87,7 +87,7 @@ fn affine_gap_distance(mut string1: String,mut string2: String) -> f64 {
 
 	distance
 }
-fn normalised_affine_gap_distance(string1: String, string2: String) -> f64 {
+fn normalised_affine_gap_distance(string1: &str, string2: &str) -> f64 {
 
 	let length1 = string1.len();
 	let length2 = string2.len();
