@@ -8,7 +8,6 @@ fn main() {
     }
 }
 
-
 fn min(a: f64, b: f64) -> f64 {
     if a < b {
         a
@@ -19,18 +18,18 @@ fn min(a: f64, b: f64) -> f64 {
 
 fn affine_gap_distance<'a>(mut string1: &'a str, mut string2: &'a str) -> f64 {
 
-	let matchWeight = 1 as f64;
-	let mismatchWeight = 11 as f64;
-	let gapWeight = 10 as f64;
-	let spaceWeight = 7 as f64;
+	let match_weight = 1 as f64;
+	let mismatch_weight = 11 as f64;
+	let gap_weight = 10 as f64;
+	let space_weight = 7 as f64;
 	let abbreviation_scale = 0.125;
 
 	let mut length1 = string1.len();
 	let mut length2 = string2.len();
 
 	if string1 == string2 &&
-		matchWeight == min(min(matchWeight, mismatchWeight), gapWeight) {
-		return matchWeight as f64 * length1 as f64
+		match_weight == min(min(match_weight, mismatch_weight), gap_weight) {
+		return match_weight as f64 * length1 as f64
 	}
 
 	if length1 < length2 {
@@ -42,50 +41,46 @@ fn affine_gap_distance<'a>(mut string1: &'a str, mut string2: &'a str) -> f64 {
         length1 = tmp;
 	};
 
-	let mut D = vec![0.0; length1 + 1];
-	let mut V_current = vec![0.0; length1 + 1];
-	let mut V_previous = vec![0.0; length1 + 1];
-
-	let mut distance = 0.0;
+	let mut d = vec![0.0; length1 + 1];
+	let mut v_current = vec![0.0; length1 + 1];
+	let mut v_previous = vec![0.0; length1 + 1];
 
 	for j in 1..(length1 + 1) {
-		V_current[j] = gapWeight + spaceWeight*j as f64;
-		D[j] = std::i32::MAX as f64;
+		v_current[j] = gap_weight + space_weight*j as f64;
+		d[j] = std::i32::MAX as f64;
 	};
 
 	for i in 1..(length2 + 1) {
 		let char2 = string2.get(i-1..i).unwrap();
 
         for i in 0..length1 + 1 {
-            V_previous[i] = V_current[i]
+            v_previous[i] = v_current[i]
         }
 
-		V_current[0] = (gapWeight + (spaceWeight*i as f64)) as f64;
+		v_current[0] = (gap_weight + (space_weight*i as f64)) as f64;
 		let mut I = std::i32::MAX as f64;
 
 		for j in 1..(length1 + 1) {
 			let char1 = string1.get(j-1..j).unwrap();
 
 			if j <= length2 {
-				I = min(I, V_current[j-1]+gapWeight) + spaceWeight;
+				I = min(I, v_current[j-1]+gap_weight) + space_weight;
 			} else {
-				I = min(I, V_current[j-1]+gapWeight *abbreviation_scale) + spaceWeight * abbreviation_scale;
+				I = min(I, v_current[j-1]+gap_weight *abbreviation_scale) + space_weight * abbreviation_scale;
 			};
-			D[j] = min(D[j], V_previous[j]+gapWeight) + spaceWeight;
+			d[j] = min(d[j], v_previous[j]+gap_weight) + space_weight;
 
 			let mut M: f64;
 			if char2 == char1 {
-				M = V_previous[j-1] + matchWeight;
+				M = v_previous[j-1] + match_weight;
 			} else {
-				M = V_previous[j-1] + mismatchWeight;
+				M = v_previous[j-1] + mismatch_weight;
 			};
 
-			V_current[j] = min(min(I, D[j]), M)
+			v_current[j] = min(min(I, d[j]), M)
 		};
 	};
-	distance = V_current[length1];
-
-	distance
+	v_current[length1]
 }
 fn normalised_affine_gap_distance(string1: &str, string2: &str) -> f64 {
 
