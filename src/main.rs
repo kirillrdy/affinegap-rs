@@ -58,26 +58,26 @@ fn affine_gap_distance<'a>(mut string1: &'a str, mut string2: &'a str) -> f64 {
         }
 
 		v_current[0] = (gap_weight + (space_weight*i as f64)) as f64;
-		let mut I = std::i32::MAX as f64;
+		let mut i = std::i32::MAX as f64;
 
 		for j in 1..(length1 + 1) {
 			let char1 = string1.get(j-1..j).unwrap();
 
 			if j <= length2 {
-				I = min(I, v_current[j-1]+gap_weight) + space_weight;
+				i = min(i, v_current[j-1]+gap_weight) + space_weight;
 			} else {
-				I = min(I, v_current[j-1]+gap_weight *abbreviation_scale) + space_weight * abbreviation_scale;
+				i = min(i, v_current[j-1]+gap_weight *abbreviation_scale) + space_weight * abbreviation_scale;
 			};
 			d[j] = min(d[j], v_previous[j]+gap_weight) + space_weight;
 
-			let mut M: f64;
+			let mut m: f64;
 			if char2 == char1 {
-				M = v_previous[j-1] + match_weight;
+				m = v_previous[j-1] + match_weight;
 			} else {
-				M = v_previous[j-1] + mismatch_weight;
+				m = v_previous[j-1] + mismatch_weight;
 			};
 
-			v_current[j] = min(min(I, d[j]), M)
+			v_current[j] = min(min(i, d[j]), m)
 		};
 	};
 	v_current[length1]
