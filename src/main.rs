@@ -63,7 +63,7 @@ fn affine_gap_distance<'a>(mut string1: &'a str, mut string2: &'a str) -> f64 {
             };
             d[j] = min(d[j], v_previous[j] + gap_weight) + space_weight;
 
-            let mut m: f64;
+            let m: f64;
             if char2 == char1 {
                 m = v_previous[j - 1] + match_weight;
             } else {
